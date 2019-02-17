@@ -19,10 +19,14 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
-
+  # Stuff I added.
+  mqtt_client: ^5.4.0
+  logging: ^0.11.3+2
+  stack_trace: ^1.9.3
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
 
 
 # For information on the generic Dart part of this file, see the
@@ -37,7 +41,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
+  assets:
+  - config/private.json
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
 
