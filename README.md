@@ -13,6 +13,7 @@ __There is no error checking.__  My intent was to learn more like a conversation
 - the [logging dart package](https://pub.dartlang.org/packages/logging).  While I don't understand everything going on in the code, I was delighted with how easy it was to customize log messages to include stack trace information.
 # Code Highlights
 ## Connecting to Adafruit IO
+### The Info You Need
 I'm assuming you have familiarity with Adafruit IO.  You've subscribed and published to a feed.  There is three pieces of information you need to have on hand when connecting to Adafruit.io:
 - the broker name.  This is ```io.adafruit.com```
 - your username.  This is your adafruit.com username.
@@ -20,6 +21,51 @@ I'm assuming you have familiarity with Adafruit IO.  You've subscribed and publi
 
 I put this info into a config/private.json file.  Here's a screenshot of where the file goes within the project:  
 ![alt text](https://github.com/BitKnitting/flutter_adafruit_mqtt/blob/master/imgs/Navigation_screenshot.png "Navigation Screen")
+
+The contents of the file looks like:  
+```
+{
+    "broker": "io.adafruit.com",
+    "username": "your username",
+    "key": "your AIO key"
+}
+```
+The helper function `_getBrokerAndKey()` read the file and turn it into something akin to a dictionary in Python:
+
+```
+  Future<Map> _getBrokerAndKey() async {
+    // TODO: Check if private.json does not exist or expected key/values are not there.
+    String connect = await rootBundle.loadString('config/private.json');
+    return (json.decode(connect));
+  }
+```
+for example:
+```
+  Map connectJson = await _getBrokerAndKey();
+    // TBD Test valid broker and key
+    log.info('in _login....broker  : ${connectJson['broker']}');
+```
+_WARNING: As I noted earlier, I do no error checking.  The code assumes all is well with the keys and values._
+### Authenticated connection
+The example code that comes with mqtt_client does not authenticate to the broker.  I do this by adding:
+```
+final MqttConnectMessage connMess = MqttConnectMessage()
+    .authenticateAs(connectJson['username'], connectJson['key'])   
+```
+authenticateAs to the MqttConnectMessage.
+## Passing Updates to the Flutter UI
+Passing updates requires a subscription to a feed.  Check out the subscription code in mqtt_stream.dart.
+### Streams
+This is where the code in [`Adafruit_feed.dart`](https://github.com/BitKnitting/flutter_adafruit_mqtt/blob/master/lib/Adafruit_feed.dart) comes in. It's all about the dance between the StreamController (the Dart library code that has a method to add data to a Stream), the Stream (the Dart library code that contains the data), and the StreamBuilder (the Flutter widget that updates the associated UI component).
+#### Adding Data to the Stream
+Adding data happens when this line of code in mqtt_stream.dart runs:
+```
+AdafruitFeed.add(pt);
+```
+### Displaying Data
+The _subscriptionData Widget in mqtt_ui_page.dart uses a StreamBuilder to associate the data coming in from the mqtt subscription with a UI element (in this case a Text widget) that displays.
+## Publishing Data
+Publishing is simpler than subscribing.  I am hoping it is obvious what's going on if you go from the mqtt_ui_page where the publish button is and follow it into mqtt_stream.dart where the publish method is.
 ## Logging
 - [main.dart]() Obviously the entry point.  Here is where I initialize how the log messages will print out.  
 ```
