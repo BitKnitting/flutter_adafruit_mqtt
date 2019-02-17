@@ -19,7 +19,7 @@ I'm assuming you have familiarity with Adafruit IO.  You've subscribed and publi
 - your AIO key.  This is a secret key generated for your Adafruit IO transactions.  You find this within the Adafruit IO web interface.
 
 I put this info into a config/private.json file.  Here's a screenshot of where the file goes within the project:  
-![Navigation screen](https://github.com/BitKnitting/flutter_adafruit_mqtt/blob/master/imgs/Navigation_screenshot.png)
+![alt text](https://github.com/BitKnitting/flutter_adafruit_mqtt/blob/master/imgs/Navigation_screenshot.png "Navigation Screen")
 ## Logging
 - [main.dart]() Obviously the entry point.  Here is where I initialize how the log messages will print out.  
 ```
